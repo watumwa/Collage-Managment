@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block fullcard %}
+
+  <!-- Search Bar -->
+   <h3>Search for Student or class</h3>
+  <div class="input-group mb-3">
+    <input type="text" class="form-control" id="searchInput" placeholder="Search for a student...">
+  </div>
+
+  <!-- Student Results -->
+  <div id="resultsContainer">
+    {% for key, result in results.items %}
+      <div class="card result-item">
+        <div class="card-header">
+          {{ result.student }}   {{ result.student.current_class }}
+        </div>
+        <div class="card-body">
+          <table class="table table-bordered table-sm">
+            <thead class="thead-light">
+              <tr>
+                <th></th>
+                <th>Subject</th>
+                <th>Test Score(30%)</th>
+                <th>Exam Score(70%)</th>
+                <th>Total Score</th>
+                <th>Grade</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for subject in result.subjects %}
+                <tr>
+                  <td>{{ forloop.counter }}</td>
+                  <td>{{ subject.subject }}</td>
+                  <td>{{ subject.test_score }}</td>
+                  <td>{{ subject.exam_score }}</td>
+                  <td>{{ subject.total_score }}</td>
+                  <td>{{ subject.grade }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="2"></td>
+                <td>{{ result.test_total }}</td>
+                <td>{{ result.exam_total }}</td>
+                <td>{{ result.total_total }}</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td colspan="4">Total Aggregates</td>
+                <td colspan="2">{{ result.calculate_total_aggregates }}</td>
+              </tr>
+              <tr>
+                <td colspan="4">Division</td>
+                <td colspan="2">{{ result.calculate_division }}</td>
+              </tr>
+              <tr>
+                <td colspan="4">Position</td>
+                <td colspan="2">{{ result.calculate_position }}</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <!-- JavaScript for Search Filtering -->
+  <script>
+    document.getElementById('searchInput').addEventListener('input', function() {
+      let filter = this.value.toLowerCase();
+      let resultItems = document.querySelectorAll('.result-item');
+
+      resultItems.forEach(function(item) {
+        let studentInfo = item.querySelector('.card-header').textContent.toLowerCase();
+        
+        if (studentInfo.includes(filter)) {
+          item.style.display = '';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    });
+  </script>
+
+{% endblock fullcard %}
